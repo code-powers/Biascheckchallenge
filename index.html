@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Bias Awareness Challenge - By Jazmine Reynolds</title>
+    <meta name="description" content="Interactive game to identify unconscious bias in healthcare - Created by Jazmine Reynolds, Sr. Instructional Designer">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            padding: 2rem;
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e11d48, #f59e0b, #10b981, #3b82f6);
+        }
+
+        .header {
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, #2563eb, #1e40af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .creator-credit {
+            color: #9ca3af;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .score-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 0.25rem;
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1e40af;
+        }
+
+        .scenario-container {
+            margin-bottom: 2rem;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .scenario-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        .scenario {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            color: #374151;
+            text-align: left;
+            background: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .question {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .options {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: left;
+            position: relative;
+        }
+
+        .option:hover {
+            background: #e2e8f0;
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .option.correct {
+            background: #dcfce7;
+            border-color: #16a34a;
+            color: #15803d;
+        }
+
+        .option.incorrect {
+            background: #fef2f2;
+            border-color: #dc2626;
+            color: #991b1b;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #3b82f6, #1e40af);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(45deg, #6b7280, #4b5563);
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: #15803d;
+            border: 2px solid #bbf7d0;
+        }
+
+        .feedback.incorrect {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 2px solid #fecaca;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+
+        .performance-message {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .welcome-message {
+            font-size: 1.1rem;
+            color: #374151;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #3b82f6, #1e40af);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .scenario {
+                font-size: 1rem;
+                padding: 1rem;
+            }
+
+            .option {
+                padding: 0.8rem;
+                font-size: 0.95rem;
+            }
+
+            .score-board {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .score-item {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🩺 Bias Check Challenge</h1>
+            <div class="subtitle">Medical Bias Awareness Training</div>
+            <div class="creator-credit">Created by Jazmine Reynolds, Sr. Instructional Designer</div>
+        </div>
+        
+        <!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcome-screen">
+            <div class="welcome-message">
+                Healthcare bias can be a matter of life and death. This interactive challenge presents real-world scenarios to help identify unconscious bias in clinical settings. 
+                <br><br>
+                <strong>Can you spot the bias before it impacts patient care?</strong>
+                <br><br>
+                Inspired by Dr. Pamela Buchanan's powerful story about clinical intuition and the importance of thorough, unbiased care.
+            </div>
+            <button class="start-btn" onclick="startGame()">🎯 Start Challenge</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="hidden">
+            <div class="score-board">
+                <div class="score-item">
+                    <div class="score-label">Scenario</div>
+                    <div class="score-value" id="current-question">1</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Bias Points Identified</div>
+                    <div class="score-value" id="score">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Awareness Level</div>
+                    <div class="score-value" id="level">Beginner</div>
+                </div>
+            </div>
+
+            <div class="scenario-container">
+                <div class="scenario-title" id="scenario-title"></div>
+                <div class="scenario" id="scenario"></div>
+                <div class="question" id="question"></div>
+                <div class="options" id="options"></div>
+            </div>
+
+            <div class="feedback" id="feedback" style="display: none;"></div>
+
+            <div class="controls">
+                <button class="btn" id="next-btn" onclick="nextScenario()" style="display: none;">Next Scenario</button>
+                <button class="btn secondary" onclick="restartGame()">Restart Challenge</button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div class="game-over hidden" id="game-over">
+            <div class="final-score" id="final-score"></div>
+            <div class="performance-message" id="performance-message"></div>
+            <div class="controls">
+                <button class="btn" onclick="restartGame()">🎯 Try Again</button>
+                <button class="btn secondary" onclick="showWelcome()">🏠 Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Medical Bias Awareness Scenarios - Created by Jazmine Reynolds
+        const scenarios = [
+            {
+                title: "Emergency Department - Abdominal Pain",
+                scenario: "A 14-year-old Black girl presents to the ED with severe abdominal pain. She appears overweight for her age. The nurse comments, 'She's probably constipated from eating too much junk food. Just give her a laxative and send her home.'",
+                question: "What potential bias might be influencing this assessment?",
+                options: [
+                    "Weight bias - assuming symptoms are diet-related",
+                    "Racial bias - dismissing pain in Black patients", 
+                    "Age bias - not taking teenage complaints seriously",
+                    "All of the above"
+                ],
+                correct: 3,
+                explanation: "This scenario demonstrates intersectional bias: weight bias (assuming obesity causes all symptoms), racial bias (historically dismissing Black patients' pain), and age bias (not taking adolescent complaints seriously). Like Dr. Buchanan's patient, this could have been appendicitis requiring immediate surgery."
+            },
+            {
+                title: "Primary Care - Chest Pain",
+                scenario: "A 45-year-old woman complains of chest pain and shortness of breath. She mentions she's been stressed at work. The physician notes she's 'anxious' and 'emotional' during the exam. Heart disease screening is deferred in favor of anxiety medication.",
+                question: "What bias might be at play here?",
+                options: [
+                    "Gender bias - attributing symptoms to emotions",
+                    "The assessment seems appropriate",
+                    "Age bias - she's too young for heart disease",
+                    "No bias detected"
+                ],
+                correct: 0,
+                explanation: "Gender bias in cardiology is well-documented. Women's cardiac symptoms are often attributed to anxiety or stress, leading to delayed diagnosis. Heart disease is the #1 killer of women, and symptoms often present differently than in men."
+            },
+            {
+                title: "Pediatric Care - ADHD Assessment", 
+                scenario: "Two 8-year-olds are referred for ADHD evaluation. Marcus is a Black boy from an urban school. His teacher reports he's 'aggressive' and 'can't sit still.' Emma is a white girl from a suburban school. Her teacher says she's 'daydreamy' and 'just needs more structure.'",
+                question: "What bias consideration is most important here?",
+                options: [
+                    "Both children should be evaluated identically",
+                    "Marcus likely has more severe ADHD",
+                    "Different racial and gender biases may affect referral language",
+                    "The teachers' assessments seem accurate"
+                ],
+                correct: 2,
+                explanation: "Research shows Black boys are more likely to be labeled 'aggressive' or 'disruptive' for the same behaviors that get white children described as 'energetic.' Girls' ADHD is often missed because it presents as inattentiveness rather than hyperactivity."
+            },
+            {
+                title: "Pain Management - Post-Surgery",
+                scenario: "Two patients had identical knee surgeries. John, a 35-year-old white construction worker, rates his pain 8/10 and receives adequate opioid medication. Maria, a 35-year-old Latina housekeeper, also rates her pain 8/10 but receives lower doses and is told to 'try ibuprofen first.'",
+                question: "What bias is most likely occurring?",
+                options: [
+                    "No bias - different people have different pain tolerances",
+                    "Racial/ethnic bias in pain assessment and treatment",
+                    "Occupational bias - construction workers need more pain relief",
+                    "Gender bias - women exaggerate pain"
+                ],
+                correct: 1,
+                explanation: "Studies consistently show racial disparities in pain management. Healthcare providers often underestimate pain in Black and Latino patients, believing false myths about pain tolerance. This leads to inadequate pain treatment and worse outcomes."
+            },
+            {
+                title: "Mental Health - Depression Screening",
+                scenario: "Dr. Smith sees two patients with similar depression symptoms. Amanda, a well-dressed white professional, is prescribed antidepressants and referred to therapy. Jamal, a Black man in work clothes, is asked about substance use and offered anger management classes instead of depression treatment.",
+                question: "What bias might explain this difference in treatment?",
+                options: [
+                    "Socioeconomic bias based on appearance",
+                    "Racial bias - stereotyping Black men as aggressive rather than depressed",
+                    "Both patients received appropriate individualized care",
+                    "Both A and B"
+                ],
+                correct: 3,
+                explanation: "Both socioeconomic and racial biases are evident. Depression in Black men is often misdiagnosed or attributed to aggression rather than mental health. Professional appearance shouldn't determine quality of care, but unconscious bias often makes it a factor."
+            }
+        ];
+
+        // Game state
+        let currentScenarioIndex = 0;
+        let score = 0;
+        let gameStarted = false;
+        let answered = false;
+
+        // DOM elements
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const gameOverScreen = document.getElementById('game-over');
+        const scenarioTitleEl = document.getElementById('scenario-title');
+        const scenarioEl = document.getElementById('scenario');
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const scoreEl = document.getElementById('score');
+        const levelEl = document.getElementById('level');
+        const currentQuestionEl = document.getElementById('current-question');
+        const feedbackEl = document.getElementById('feedback');
+        const nextBtn = document.getElementById('next-btn');
+        const finalScoreEl = document.getElementById('final-score');
+        const performanceMessageEl = document.getElementById('performance-message');
+
+        function showWelcome() {
+            welcomeScreen.classList.remove('hidden');
+            gameScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            gameStarted = false;
+        }
+
+        function startGame() {
+            welcomeScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            gameOverScreen.classList.add('hidden');
+            
+            // Reset game state
+            currentScenarioIndex = 0;
+            score = 0;
+            gameStarted = true;
+            answered = false;
+            
+            updateDisplay();
+            loadScenario();
+        }
+
+        function loadScenario() {
+            if (currentScenarioIndex >= scenarios.length) {
+                endGame();
+                return;
+            }
+
+            const scenario = scenarios[currentScenarioIndex];
+            scenarioTitleEl.textContent = scenario.title;
+            scenarioEl.textContent = scenario.scenario;
+            questionEl.textContent = scenario.question;
+            
+            optionsEl.innerHTML = '';
+            
+            scenario.options.forEach((option, index) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option';
+                optionEl.textContent = option;
+                optionEl.onclick = () => selectAnswer(index);
+                optionsEl.appendChild(optionEl);
+            });
+
+            feedbackEl.style.display = 'none';
+            nextBtn.style.display = 'none';
+            answered = false;
+
+            updateDisplay();
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (answered) return;
+            
+            answered = true;
+            const scenario = scenarios[currentScenarioIndex];
+            const isCorrect = selectedIndex === scenario.correct;
+            
+            if (isCorrect) {
+                score++;
+            }
+
+            const optionElements = optionsEl.children;
+            for (let i = 0; i < optionElements.length; i++) {
+                optionElements[i].classList.add('disabled');
+                if (i === scenario.correct) {
+                    optionElements[i].classList.add('correct');
+                } else if (i === selectedIndex && !isCorrect) {
+                    optionElements[i].classList.add('incorrect');
+                }
+            }
+
+            showFeedback(isCorrect, scenario.explanation);
+            nextBtn.style.display = 'inline-block';
+            updateDisplay();
+        }
+
+        function showFeedback(isCorrect, explanation) {
+            feedbackEl.style.display = 'flex';
+            feedbackEl.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+            
+            const message = isCorrect ? 
+                `✅ Correct! ${explanation}` : 
+                `🤔 Consider this: ${explanation}`;
+            
+            feedbackEl.textContent = message;
+        }
+
+        function nextScenario() {
+            currentScenarioIndex++;
+            loadScenario();
+        }
+
+        function updateDisplay() {
+            scoreEl.textContent = score;
+            currentQuestionEl.textContent = `${currentScenarioIndex + 1}/${scenarios.length}`;
+            
+            // Update awareness level
+            const percentage = (score / Math.max(currentScenarioIndex, 1)) * 100;
+            let level = 'Developing';
+            if (percentage >= 80) level = 'Expert';
+            else if (percentage >= 60) level = 'Proficient';
+            else if (percentage >= 40) level = 'Aware';
+            
+            levelEl.textContent = level;
+        }
+
+        function endGame() {
+            gameScreen.classList.add('hidden');
+            gameOverScreen.classList.remove('hidden');
+            
+            const percentage = Math.round((score / scenarios.length) * 100);
+            finalScoreEl.textContent = `${score}/${scenarios.length} (${percentage}%)`;
+            
+            let message = '';
+            if (percentage >= 80) {
+                message = `🏆 Bias Detection Expert! You identified ${percentage}% of bias scenarios correctly. Your awareness can help save lives by ensuring equitable care for all patients.`;
+            } else if (percentage >= 60) {
+                message = `👨‍⚕️ Well Done! You caught ${percentage}% of bias scenarios. Continue developing your awareness - every bias identified is a step toward better patient care.`;
+            } else if (percentage >= 40) {
+                message = `🎯 Good Start! You identified ${percentage}% of bias scenarios. Keep learning about unconscious bias - awareness is the first step to change.`;
+            } else {
+                message = `📚 Keep Learning! You identified ${percentage}% of bias scenarios. Bias awareness takes practice. Every healthcare professional can improve with training and reflection.`;
+            }
+            
+            performanceMessageEl.textContent = message;
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            showWelcome();
+        };
+    </script>
+</body>
+</html>
