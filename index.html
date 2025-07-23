@@ -608,6 +608,15 @@
         window.onload = function() {
             showWelcome();
         };
+        function returnToStoryline() {
+            // Tell Storyline the game is complete
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage('gameComplete', '*');
+            } else {
+                // Fallback if not in iframe
+                alert('Game completed! Please continue in your course.');
+            }
+        }
     </script>
 </body>
 </html>
